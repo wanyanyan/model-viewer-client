@@ -33,7 +33,7 @@ export default {
         }
         this.viewer.loadModels(type, `http://127.0.0.1:10024/${filename}.${filetype}`)
       } else {
-        this.viewer.loadModels('gltf', './Bee.glb')
+        this.viewer.loadModels('gltf', './example.glb')
       }
     }
   },
@@ -43,12 +43,19 @@ export default {
   },
   computed: {
     ...mapState({
-      modelOption: state => state.modelOption
+      modelOption: state => state.modelOption,
+      environment: state => state.environment
     })
   },
   watch: {
     modelOption() {
       this.addModel()
+    },
+    environment() {
+      let {color, intensity} = this.environment
+      let light = this.viewer.scene.getObjectByProperty('fid', 'light-environment')
+      light.color.setHex(color)
+      light.intensity = intensity
     }
   }
 }

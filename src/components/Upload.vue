@@ -4,12 +4,12 @@
     <div class="title">光照</div>
     <div class="card">
       <div class="name">环境光</div>
-      <Form :model="light" :label-width="80">
+      <Form class="my-form" :model="light" :label-width="50">
         <FormItem label="颜色">
-          <ColorPicker v-model="light.color" @on-change="lightChange"/>
+          <ColorPicker v-model="light.color" size="small" format="hex" transfer @on-change="lightChange"/>
         </FormItem>
         <FormItem label="强度">
-          <Slider v-model="light.intensity" :min="1" :max="3" :step="0.1" @on-change="lightChange"></Slider>
+          <Slider v-model="light.intensity" :min="0" :max="3" :step="0.1" @on-change="lightChange"></Slider>
         </FormItem>
       </Form>
     </div>
@@ -35,13 +35,16 @@ export default {
       })
     },
     lightChange() {
-      
+      this.$store.commit('patch_environment', {
+        color: parseInt(this.light.color.replace('#', '0x')),
+        intensity: this.light.intensity
+      })
     }
   },
   data() {
     return {
       light: {
-        color: '#fffff',
+        color: '#ffffff',
         intensity: 1
       }
     }
@@ -53,5 +56,28 @@ export default {
 <style scoped lang="less">
 .btn{
   margin: 10px;
+}
+.title{
+  font-size: 16px;
+  font-weight: bold;
+  text-align: left;
+  line-height: 30px;
+}
+.card{
+  text-align: left;
+  background-color: #fff;
+  padding: 5px;
+  border-radius: 5px;
+  .name{
+    font-weight: bold;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 5px;
+  }
+}
+</style>
+
+<style lang="less">
+.my-form .ivu-form-item{
+  margin-bottom: 0px;
 }
 </style>
