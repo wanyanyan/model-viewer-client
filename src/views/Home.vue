@@ -38,6 +38,7 @@ export default {
     top: 0;
     border-right: 1px solid #eee;
     box-shadow: 0 0 10px #ccc;
+    overflow: auto;
   }
   .right{
     width: calc(100% - 200px);
@@ -46,6 +47,7 @@ export default {
     top: 0;
     position: absolute;
     background-color: #fff;
+    overflow: hidden;
   }
 }
 </style>
