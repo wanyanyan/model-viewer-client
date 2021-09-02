@@ -1,9 +1,9 @@
-import { customAlphabet } from 'nanoid'
-import * as THREE from "THREE";
+import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
+import {Sky} from 'three/examples/jsm/objects/Sky'
 
 
 export default {
@@ -80,15 +80,6 @@ export default {
       return t;
     }
   },
-
-  generateId() {
-    // 生成随机id
-    const nanoid = customAlphabet(
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
-      11
-    );
-    return nanoid();
-  },
   parseUrl(url) {
     let arr = url.split("/");
     let file = arr.pop().split('.');
@@ -131,18 +122,34 @@ export default {
       });
     });
   },
-  createSky() {
-    var skyboxUrls = [
-      "./static/skyBox/skybox_px.jpg",
-      "./static/skyBox/skybox_nx.jpg",
-      "./static/skyBox/skybox_py.jpg",
-      "./static/skyBox/skybox_ny.jpg",
-      "./static/skyBox/skybox_pz.jpg",
-      "./static/skyBox/skybox_nz.jpg",
-    ];
+  createSky(scene) {
+    let sky = new Sky();
+    sky.scale.setScalar(450000);
+    scene.add(sky);
 
-    //CubeTextureLoader加载纹理图
-    return new THREE.CubeTextureLoader().load(skyboxUrls);
+    let sun = new THREE.Vector3();
+
+    const effectController = {
+      turbidity: 20,
+      rayleigh: 4,
+      mieCoefficient: 0.1,
+      mieDirectionalG: 1,
+      elevation: 10,
+      azimuth: 180,
+      exposure: 1
+    };
+    const uniforms = sky.material.uniforms;
+    uniforms["turbidity"].value = effectController.turbidity;
+    uniforms["rayleigh"].value = effectController.rayleigh;
+    uniforms["mieCoefficient"].value = effectController.mieCoefficient;
+    uniforms["mieDirectionalG"].value = effectController.mieDirectionalG;
+
+    const phi = THREE.MathUtils.degToRad(90 - effectController.elevation);
+    const theta = THREE.MathUtils.degToRad(effectController.azimuth);
+
+    sun.setFromSphericalCoords(1, phi, theta);
+
+    uniforms["sunPosition"].value.copy(sun);
   },
   createCamera(width, height) {
     let k = width / height;
@@ -162,7 +169,10 @@ export default {
     });
     renderer.shadowMap.enabled = true;
     renderer.setSize(width, height);
-    renderer.setClearColor(0x9d3ff, 1);
+    renderer.outputEncoding = THREE.sRGBEncoding;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    //renderer.setClearColor(0xff0000, 1);
+    renderer.toneMappingExposure = 0.5;
     return renderer;
   },
   mergeBoundingBox(bbox1, bbox2) {

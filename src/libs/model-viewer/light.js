@@ -1,6 +1,26 @@
-import * as THREE from 'THREE'
+import shortid from 'shortid';
+import * as THREE from 'three'
 
-export const createLignt = (scene) => {
+export default {
+  create(options) {
+    let { id, type, color, intensity } = options;
+    let light = null
+    if (type === 'environment') {
+      light = this.createAmbientLight(color, intensity);
+    }
+    if (!id) {
+      id = shortid.generate()
+    }
+    light.fid = id
+    return light
+  },
+
+  createAmbientLight(color, intensity) {
+    return new THREE.AmbientLight(color, intensity);
+  }
+}
+
+/* export const createLignt = (scene) => {
   let floorHeight = 5
   createSpotLight(scene, [4.5, 3, floorHeight]);
   createSpotLight(scene, [-2.5, 5, floorHeight]);
@@ -34,4 +54,4 @@ function createSpotLight(scene, position, intensity) {
   light.target = target
   scene.add(light.target);
   scene.add(light)
-}
+} */

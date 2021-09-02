@@ -1,7 +1,8 @@
 'use strict'
 
-import { app, protocol, BrowserWindow } from 'electron'
+import { app, protocol, BrowserWindow, ipcMain, dialog } from "electron";
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
+import server from './server'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -42,6 +43,7 @@ async function createWindow () {
 app.on('window-all-closed', () => {
   // On macOS it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
+  server.remove();
   if (process.platform !== 'darwin') {
     app.quit()
   }
@@ -82,3 +84,36 @@ if (isDevelopment) {
     })
   }
 }
+
+ipcMain.on("openDialog", e => {
+  server.remove();
+  dialog
+    .showOpenDialog({
+      filters: [
+        { name: "GLTF", extensions: ["gltf", "glb"] },
+        { name: "OBJ", extensions: ["obj"] },
+        { name: "DRC", extensions: ["drc"] },
+        { name: "ModelSet", extensions: ["json"] },
+        { name: "All Files", extensions: ["*"] }
+      ],
+      properties: ["openFile"]
+    })
+    .then(result => {
+      let { canceled, filePaths } = result;
+      if (canceled) {
+        return;
+      } else {
+        let path = filePaths[0];
+        let arr = path.split("\\");
+        let file = arr.pop().split(".");
+        let info = {
+          baseUrl: arr.join("\\"),
+          filename: file[0],
+          filetype: file[1]
+        };
+        server.create(info.baseUrl, () => {
+          e.reply("selectedItem", info);
+        });
+      }
+    });
+});
