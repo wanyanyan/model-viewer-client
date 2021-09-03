@@ -38,7 +38,8 @@ export default {
     top: 0;
     border-right: 1px solid #eee;
     box-shadow: 0 0 10px #ccc;
-    overflow: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
   }
   .right{
     width: calc(100% - 200px);

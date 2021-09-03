@@ -13,14 +13,43 @@
         </FormItem>
       </Form>
     </div>
+    <div class="card editable" v-for="item in localLights" :key="item.id">
+      <div class="name">{{item.name}}</div>
+      <Form class="my-form" :model="item" :label-width="50">
+        <FormItem label="颜色">
+          <ColorPicker v-model="item.color" size="small" format="hex" transfer @on-change="localLightChange"/>
+        </FormItem>
+        <FormItem label="强度">
+          <Slider v-model="item.intensity" :min="0" :max="10" :step="0.1" @on-change="localLightChange"></Slider>
+        </FormItem>
+      </Form>
+    </div>
+    <Button type="primary" ghost size="small" @click="addLightDlg">添加光照</Button>
+    <Modal
+      v-model="dialogShow"
+      title="添加光照"
+      width="340"
+      :mask-closable="false"
+      :closable="false"
+      @on-ok="ok"
+      @on-cancel="cancel">
+      <LightForm ref="lightForm" v-if="dialogShow"/>
+      <!-- <div class="meta" v-if="boundingBox">模型包围盒：[{{boundingBox.min.x}}, {{boundingBox.min.y}}, {{boundingBox.min.z}}] - [{{boundingBox.max.x}}, {{boundingBox.max.y}}, {{boundingBox.max.z}}]</div> -->
+    </Modal>
   </div>
 </template>
 
 <script>
 import {ipcRenderer} from 'electron'
 import Constants from '@/libs/constants'
+import LightForm from './LightForm.vue'
+import {mapState} from 'vuex'
+import _ from 'lodash'
 export default {
   name: 'Upload',
+  components: {
+    LightForm
+  },
   methods: {
     openfile() {
       ipcRenderer.send("openDialog")
@@ -39,20 +68,57 @@ export default {
         color: parseInt(this.light.color.replace('#', '0x')),
         intensity: this.light.intensity
       })
+    },
+    localLightChange() {
+      let lights = _.cloneDeep(this.localLights)
+      this.commitLights(lights)
+    },
+    addLightDlg() {
+      this.dialogShow = true
+    },
+    commitLights(lights) {
+      lights.map(item => item.color = parseInt(item.color.replace('#', '0x')))
+      this.$store.commit('patch_lights', lights)
+    },
+    ok() {
+      let option = this.$refs.lightForm.option
+      let lights = _.cloneDeep(this.localLights)
+      lights.push(option)
+      this.commitLights(lights)
+    },
+    cancel() {
+
     }
+  },
+  mounted() {
+
   },
   data() {
     return {
       light: {
         color: '#ffffff',
         intensity: 1
-      }
+      },
+      localLights: [],
+      dialogShow: false
+    }
+  },
+  computed: {
+    ...mapState({
+      lights: state => state.lights,
+      boundingBox: state => state.boundingBox
+    })
+  },
+  watch: {
+    lights() {
+      let localLights = _.cloneDeep(this.lights)
+      localLights.map(item => item.color ='#' + item.color.toString(16))
+      this.localLights = localLights
     }
   }
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
 .btn{
   margin: 10px;
@@ -68,6 +134,7 @@ export default {
   background-color: #fff;
   padding: 5px;
   border-radius: 5px;
+  margin-bottom: 5px;
   .name{
     font-weight: bold;
     border-bottom: 1px solid #eee;

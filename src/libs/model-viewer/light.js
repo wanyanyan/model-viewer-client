@@ -1,24 +1,34 @@
 import shortid from 'shortid';
 import * as THREE from 'three'
+import util from './util';
 
 export default {
   create(options) {
     let { id, type, color, intensity } = options;
-    let light = null
-    if (type === 'environment') {
+    let light = null;
+    if (type === "environment") {
       light = this.createAmbientLight(color, intensity);
+    } else if (type === "direction") {
+      light = this.createDirectionLight(options);
     }
     if (!id) {
-      id = shortid.generate()
+      id = shortid.generate();
     }
-    light.fid = id
-    return light
+    light.fid = id;
+    return light;
   },
 
   createAmbientLight(color, intensity) {
     return new THREE.AmbientLight(color, intensity);
+  },
+  createDirectionLight(options) {
+    let light = new THREE.DirectionalLight(options.color, options.intensity);
+    light.castShadow = true
+    light.position.set(...options.position);
+    //util.setLightProperty(light, options)
+    return light
   }
-}
+};
 
 /* export const createLignt = (scene) => {
   let floorHeight = 5

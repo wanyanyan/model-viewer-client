@@ -194,5 +194,35 @@ export default {
         z: Math.max(bbox1.max.z, bbox2.max.z),
       },
     };
+  },
+  setLightProperty(lightObject, options) {
+    let ignoreFields = ['id', 'type']
+    for (let key in options) {
+      if (ignoreFields.indexOf(key) !== -1) {
+        continue;
+      }
+      if (key === "color") {
+        lightObject.color.setHex(options[key]);
+      } else if (key === 'position') {
+        lightObject.position.set(...options[key])
+      } else {
+        lightObject[key] = options[key];
+      }
+    }
+    /* if (options.type === 'direction') {
+      lightObject.shadow.camera.near = 20; //产生阴影的最近距离
+        lightObject.shadow.camera.far = 200; //产生阴影的最远距离
+        lightObject.shadow.camera.left = -50; //产生阴影距离位置的最左边位置
+        lightObject.shadow.camera.right = 50; //最右边
+        lightObject.shadow.camera.top = 50; //最上边
+        lightObject.shadow.camera.bottom = -50; //最下面
+
+        //这两个值决定使用多少像素生成阴影 默认512
+        lightObject.shadow.mapSize.height = 1024;
+        lightObject.shadow.mapSize.width = 1024;
+
+        //告诉平行光需要开启阴影投射
+        lightObject.castShadow = true;
+    } */
   }
 };

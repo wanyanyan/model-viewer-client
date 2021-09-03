@@ -10,5 +10,6 @@ export default {
     }
   },
   ambientLightId: "light-environment",
-  objectGroupId: 'object-group'
+  objectGroupId: 'object-group',
+  axisHelperId: 'axis-helper'
 };

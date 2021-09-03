@@ -49,15 +49,15 @@ class ModelViewer extends Event {
     });
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.controls.target.set(0, 0, 0);
-    
+
     util.createSky(this.scene);
     this._render();
     if (this.options.axisHelper) {
       this.addAxisHelper();
     }
-    this.objectGroup = new THREE.Group()
-    this.objectGroup.fid = CONSTANTS.objectGroupId
-    this.scene.add(this.objectGroup)
+    this.objectGroup = new THREE.Group();
+    this.objectGroup.fid = CONSTANTS.objectGroupId;
+    this.scene.add(this.objectGroup);
   }
 
   _render() {
@@ -148,11 +148,11 @@ class ModelViewer extends Event {
       }
     });
     if (this._needBoundingBox) {
-      let box3 = new THREE.Box3
-      box3.expandByObject(object)
+      let box3 = new THREE.Box3();
+      box3.expandByObject(object);
       this.boundingBox = util.mergeBoundingBox(this.boundingBox, box3);
     }
-    this.objectGroup.add(object)
+    this.objectGroup.add(object);
     this._loadIndex++;
     if (this._loadIndex >= this._totalModels) {
       this.loaded = true;
@@ -167,14 +167,34 @@ class ModelViewer extends Event {
     this.scene.add(light.create(options));
   }
 
+  updateLight(options) {
+    let object = this.scene.getObjectByProperty("fid", options.id);
+    if (!object) {
+      return;
+    }
+    util.setLightProperty(object, options);
+  }
+
   removeLight(id) {
-    let object = this.scene.getObjectByProperty('fid', id)
-    object.removeFromParent()
+    this.removeObject(id)
+  }
+
+  removeObject(id) {
+    let object = this.scene.getObjectByProperty("fid", id);
+    if (!object) {
+      return;
+    }
+    object.removeFromParent();
   }
 
   addAxisHelper() {
-    let axisHelper = new THREE.AxisHelper(250);
+    let axisHelper = new THREE.AxesHelper(250);
+    axisHelper.fid = CONSTANTS.axisHelperId;
     this.scene.add(axisHelper);
+  }
+
+  removeAxisHelper() {
+    this.removeObject(CONSTANTS.axisHelperId);
   }
 
   isLoaded() {
@@ -218,11 +238,15 @@ class ModelViewer extends Event {
     );
   }
 
+  getBoundingBox() {
+    return this.boundingBox;
+  }
+
   removeAll() {
-    this.scene.remove(this.objectGroup)
-    this.objectGroup = new THREE.Group()
-    this.scene.add(this.objectGroup)
-    this.boundingBox = null
+    this.scene.remove(this.objectGroup);
+    this.objectGroup = new THREE.Group();
+    this.scene.add(this.objectGroup);
+    this.boundingBox = null;
   }
 }
 

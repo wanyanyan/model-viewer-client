@@ -10,7 +10,8 @@ export default new Vuex.Store({
       color: '#ffffff',
       intensity: 1
     },
-    lights: []
+    lights: [],
+    boundingBox: null
   },
   mutations: {
     path_model_option(state, value) {
@@ -21,6 +22,9 @@ export default new Vuex.Store({
     },
     patch_environment(state, value) {
       state.environment = value
+    },
+    patch_boundingbox(state, value) {
+      state.boundingBox = value
     }
   },
   actions: {},
