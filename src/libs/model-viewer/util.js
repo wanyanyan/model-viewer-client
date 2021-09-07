@@ -4,6 +4,7 @@ import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 import {Sky} from 'three/examples/jsm/objects/Sky'
+import shortid from "shortid";
 
 
 export default {
@@ -224,6 +225,16 @@ export default {
             info.index += Math.round(pos.count / pos.itemSize);
           }
         }
+      }
+    }
+  },
+  assignObject(object, options) {
+    let {id, name, properties} = options
+    object.fid = id || shortid.generate()
+    object.name = name || ''
+    if (properties) { // 写入属性
+      for(let key in properties) {
+        object.userData[key] = properties[key]
       }
     }
   }

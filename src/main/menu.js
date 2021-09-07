@@ -8,17 +8,19 @@ const template = [{
       }]
     },
     {
-      label: '编辑',
-      submenu: [{
-        label: '国内新闻',
-        submenu: [{
-            label: '北京新闻'
-        }, {
-            label: '河南新闻'
-        }]
-      }, {
-          label: '国际新闻'
-      }]
+      label: '工具',
+      submenu: [
+        {
+          label: 'obj转gltf/glb'
+        },
+        {
+          label: 'obj转drc'
+        },
+        { type: 'separator' },
+        {
+          label: '生成配置文件'
+        }
+      ]
     },
     {
     label: '视图',
