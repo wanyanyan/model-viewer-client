@@ -34,7 +34,6 @@
       @on-ok="ok"
       @on-cancel="cancel">
       <LightForm ref="lightForm" v-if="dialogShow"/>
-      <!-- <div class="meta" v-if="boundingBox">模型包围盒：[{{boundingBox.min.x}}, {{boundingBox.min.y}}, {{boundingBox.min.z}}] - [{{boundingBox.max.x}}, {{boundingBox.max.y}}, {{boundingBox.max.z}}]</div> -->
     </Modal>
   </div>
 </template>

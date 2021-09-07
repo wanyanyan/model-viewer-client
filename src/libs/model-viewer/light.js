@@ -1,6 +1,5 @@
 import shortid from 'shortid';
 import * as THREE from 'three'
-import util from './util';
 
 export default {
   create(options) {
@@ -10,6 +9,8 @@ export default {
       light = this.createAmbientLight(color, intensity);
     } else if (type === "direction") {
       light = this.createDirectionLight(options);
+    } else if (type === 'spot') {
+      light = this.createSpotLight(options)
     }
     if (!id) {
       id = shortid.generate();
@@ -23,9 +24,28 @@ export default {
   },
   createDirectionLight(options) {
     let light = new THREE.DirectionalLight(options.color, options.intensity);
-    light.castShadow = true
+    light.castShadow = true;
     light.position.set(...options.position);
     //util.setLightProperty(light, options)
+    return light;
+  },
+  createSpotLight(options) {
+    let target = new THREE.Object3D();
+    target.position.set(options.position[0], options.position[1], 1);
+
+    //scene.add(mesh)
+    let light = new THREE.SpotLight(options.color, options.intensity);
+    light.castShadow = true;
+    light.position.set(...options.position);
+    light.angle = Math.PI / 1.7;
+    light.distance = 15;
+    light.penumbra = 0.4;
+    light.shadow.near = 1;
+    light.shadow.far = 10;
+    light.shadow.camera.fov = 20;
+    light.decay = 2;
+    light.shadow.radius = 2;
+    light.target = target;
     return light
   }
 };

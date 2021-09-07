@@ -41,12 +41,9 @@ class ModelViewer extends Event {
     this.camera = util.createCamera(this.width, this.height);
     this.renderer = util.createRenderer(this.width, this.height);
     this._container.appendChild(this.renderer.domElement);
-    this.addLight({
-      id: CONSTANTS.ambientLightId,
-      type: "environment",
-      color: "#ffffff",
-      intensity: 1
-    });
+    CONSTANTS.defaultLights.forEach(l => {
+      this.addLight(l)
+    })
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.controls.target.set(0, 0, 0);
 
@@ -104,6 +101,7 @@ class ModelViewer extends Event {
 
   loadModels(type, url) {
     this._loadIndex = 0; // 用于记录加载了几个模型
+    this.startTime = new Date().getTime()
     if (type === "modelset") {
       fetch(url)
         .then(res => res.json())
@@ -157,6 +155,7 @@ class ModelViewer extends Event {
     if (this._loadIndex >= this._totalModels) {
       this.loaded = true;
       this.fire("loaded");
+      this.endTime = new Date().getTime()
       if (this._needBoundingBox) {
         this.fitBounds();
       }
@@ -164,7 +163,11 @@ class ModelViewer extends Event {
   }
 
   addLight(options) {
-    this.scene.add(light.create(options));
+    let lightObject = light.create(options);
+    this.scene.add(lightObject);
+    if (options.type === 'spot') {
+      this.scene.add(lightObject.target);
+    }
   }
 
   updateLight(options) {
@@ -247,6 +250,18 @@ class ModelViewer extends Event {
     this.objectGroup = new THREE.Group();
     this.scene.add(this.objectGroup);
     this.boundingBox = null;
+  }
+
+  getStatistics() {
+    const info = { components: 0, index: 0 };
+    this.scene.traverse(object => {
+      util.getObjectInfo(object, info);
+    });
+    return {
+      components: info.components,
+      index: Math.round(info.index / 3),
+      time: this.endTime - this.startTime
+    };
   }
 }
 

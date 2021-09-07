@@ -2,10 +2,19 @@
   <div class="container">
     <div class="three-view"></div>
     <div class="toolbar">
-       <Button class="btn" type="warning" size="small" shape="circle" icon="md-information"></Button>
-       <Button class="btn" type="warning" size="small" shape="circle" icon="md-help" @click=toggleHelper></Button>
-       <Button class="btn" type="warning" size="small" shape="circle" icon="md-expand" @click=fitBounds></Button>
+       <Button class="btn" type="warning" size="small" shape="circle" icon="md-information" title="显示详情" @click="showDetails"></Button>
+       <Button class="btn" type="warning" size="small" shape="circle" icon="md-help" title="显示坐标轴" @click=toggleHelper></Button>
+       <Button class="btn" type="warning" size="small" shape="circle" icon="md-expand" title="回到初始视角" @click=fitBounds></Button>
     </div>
+    <div class="meta" v-if="boundingBox">包围盒：min({{boundingBox.min.x}}, {{boundingBox.min.y}}, {{boundingBox.min.z}})，max({{boundingBox.max.x}}, {{boundingBox.max.y}}, {{boundingBox.max.z}})</div>
+    <Modal
+      v-model="dialogShow"
+      title="统计信息"
+      width="340"
+      :mask-closable="false"
+      :closable="false">
+      <Info :info="staInfo" v-if="dialogShow"/>
+    </Modal>
   </div>
 </template>
 
@@ -13,7 +22,11 @@
 import ModelViewer from '../libs/model-viewer'
 import {mapState} from 'vuex'
 import _ from 'lodash'
+import Info from './Info.vue'
 export default {
+  components: {
+    Info
+  },
   methods: {
     initView() {
       this.viewer = new ModelViewer({
@@ -38,12 +51,26 @@ export default {
           type = 'modelset'
         }
         this.viewer.loadModels(type, `http://127.0.0.1:10024/${filename}.${filetype}`)
+        this.$store.commit('patch_loading', true)
       } else {
         this.viewer.loadModels('gltf', './example.glb')
       }
       this.viewer.on('loaded', () => {
         let bbox = this.viewer.getBoundingBox()
-        this.$store.commit('patch_boundingbox', _.cloneDeep(bbox))
+        let bboxSimplify = {
+          min: {
+            x: Number(bbox.min.x.toFixed(2)),
+            y: Number(bbox.min.y.toFixed(2)),
+            z: Number(bbox.min.z.toFixed(2))
+          },
+          max: {
+            x: Number(bbox.max.x.toFixed(2)),
+            y: Number(bbox.max.y.toFixed(2)),
+            z: Number(bbox.max.z.toFixed(2))
+          }
+        }
+        this.$store.commit('patch_boundingbox', bboxSimplify)
+        this.$store.commit('patch_loading', false)
       })
     },
     fitBounds() {
@@ -56,6 +83,12 @@ export default {
       } else {
         this.viewer.removeAxisHelper()
       }
+    },
+    showDetails() {
+      let info = this.viewer.getStatistics()
+      console.log(info)
+      this.staInfo = info
+      this.dialogShow = true
     }
   },
   mounted() {
@@ -64,14 +97,17 @@ export default {
   },
   data() {
     return {
-      showHelper: false
+      showHelper: false,
+      dialogShow: false,
+      staInfo: null
     }
   },
   computed: {
     ...mapState({
       modelOption: state => state.modelOption,
       environment: state => state.environment,
-      lights: state => state.lights
+      lights: state => state.lights,
+      boundingBox: state => state.boundingBox
     })
   },
   watch: {
@@ -111,10 +147,19 @@ export default {
 .toolbar{
   width: 30px;
   position: absolute;
-  bottom: 10px;
+  bottom: 40px;
   right: 10px;
 }
 .btn{
   margin-top: 10px;
+}
+.meta{
+  position: absolute;
+  width: 100%;
+  text-align: left;
+  padding-left: 10px;
+  line-height: 25px;
+  background-color: #ffffff;
+  bottom: 0;
 }
 </style>

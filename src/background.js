@@ -3,6 +3,7 @@
 import { app, protocol, BrowserWindow, ipcMain, dialog } from "electron";
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import server from './server'
+import createMenu from './main/menu'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -18,7 +19,7 @@ async function createWindow () {
     height: 600,
     title: 'ModelViewer',
     backgroundColor: '#eeeeee',
-    autoHideMenuBar: true,
+    autoHideMenuBar: false,
     webPreferences: {
 
       // Use pluginOptions.nodeIntegration, leave this alone
@@ -27,6 +28,8 @@ async function createWindow () {
       contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION
     }
   })
+  
+  createMenu()
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode

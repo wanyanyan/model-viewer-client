@@ -82,11 +82,11 @@ export default {
   },
   parseUrl(url) {
     let arr = url.split("/");
-    let file = arr.pop().split('.');
-    return {baseUrl: arr.join("/"), filename: file[0], filetype: file[1]};
+    let file = arr.pop().split(".");
+    return { baseUrl: arr.join("/"), filename: file[0], filetype: file[1] };
   },
   loadGlb(url, callback) {
-    new GLTFLoader().load(url, (gltf) => {
+    new GLTFLoader().load(url, gltf => {
       let object = gltf.scene;
       if (callback) {
         callback(object);
@@ -95,10 +95,10 @@ export default {
   },
 
   loadObj(url, callback) {
-    let {baseUrl, filename, filetype} = this.parseUrl(url)
-    new MTLLoader().load(`${baseUrl}/${filename}.mtl`, function (materials) {
+    let { baseUrl, filename, filetype } = this.parseUrl(url);
+    new MTLLoader().load(`${baseUrl}/${filename}.mtl`, function(materials) {
       materials.preload();
-      new OBJLoader().setMaterials(materials).load(url, function (object) {
+      new OBJLoader().setMaterials(materials).load(url, function(object) {
         if (callback) {
           callback(object);
         }
@@ -108,12 +108,12 @@ export default {
 
   loadDrc(url, callback) {
     let { baseUrl, filename, filetype } = this.parseUrl(url);
-    new MTLLoader().load(`${baseUrl}/${filename}.mtl`, function (materials) {
+    new MTLLoader().load(`${baseUrl}/${filename}.mtl`, function(materials) {
       materials.preload();
       let dracoLoader = new DRACOLoader();
-      dracoLoader.setDecoderPath("./static/");
+      dracoLoader.setDecoderPath("./lib/");
       dracoLoader.setDecoderConfig({ type: "js" });
-      dracoLoader.load(url, (geometry) => {
+      dracoLoader.load(url, geometry => {
         let material = materials.materials[Object.keys(materials.materials)[0]];
         let object = new THREE.Mesh(geometry, material);
         if (callback) {
@@ -155,7 +155,7 @@ export default {
     let k = width / height;
     let s = 200;
     let camera = new THREE.PerspectiveCamera(60, k, 0.1, 500000);
-    camera.position.set(100, 100, 100)
+    camera.position.set(100, 100, 100);
     camera.up.set(0, 0, 1);
     camera.updateMatrixWorld();
     return camera;
@@ -165,7 +165,7 @@ export default {
       physicallyCorrectLights: true,
       logarithmicDepthBuffer: true,
       antialias: true,
-      alpha: true,
+      alpha: true
     });
     renderer.shadowMap.enabled = true;
     renderer.setSize(width, height);
@@ -177,52 +177,54 @@ export default {
   },
   mergeBoundingBox(bbox1, bbox2) {
     if (!bbox1) {
-      return bbox2
+      return bbox2;
     }
     if (!bbox2) {
-      return bbox1
+      return bbox1;
     }
     return {
       min: {
         x: Math.min(bbox1.min.x, bbox2.min.x),
         y: Math.min(bbox1.min.y, bbox2.min.y),
-        z: Math.min(bbox1.min.z, bbox2.min.z),
+        z: Math.min(bbox1.min.z, bbox2.min.z)
       },
       max: {
         x: Math.max(bbox1.max.x, bbox2.max.x),
         y: Math.max(bbox1.max.y, bbox2.max.y),
-        z: Math.max(bbox1.max.z, bbox2.max.z),
-      },
+        z: Math.max(bbox1.max.z, bbox2.max.z)
+      }
     };
   },
   setLightProperty(lightObject, options) {
-    let ignoreFields = ['id', 'type']
+    let ignoreFields = ["id", "type"];
     for (let key in options) {
       if (ignoreFields.indexOf(key) !== -1) {
         continue;
       }
       if (key === "color") {
         lightObject.color.setHex(options[key]);
-      } else if (key === 'position') {
-        lightObject.position.set(...options[key])
+      } else if (key === "position") {
+        lightObject.position.set(...options[key]);
       } else {
         lightObject[key] = options[key];
       }
     }
-    /* if (options.type === 'direction') {
-      lightObject.shadow.camera.near = 20; //产生阴影的最近距离
-        lightObject.shadow.camera.far = 200; //产生阴影的最远距离
-        lightObject.shadow.camera.left = -50; //产生阴影距离位置的最左边位置
-        lightObject.shadow.camera.right = 50; //最右边
-        lightObject.shadow.camera.top = 50; //最上边
-        lightObject.shadow.camera.bottom = -50; //最下面
-
-        //这两个值决定使用多少像素生成阴影 默认512
-        lightObject.shadow.mapSize.height = 1024;
-        lightObject.shadow.mapSize.width = 1024;
-
-        //告诉平行光需要开启阴影投射
-        lightObject.castShadow = true;
-    } */
+  },
+  getObjectInfo( object, info) {
+    // only count in Mesh and Line
+    if (object instanceof THREE.Mesh || object instanceof THREE.Line) {
+      info.components++;
+      if (object.geometry instanceof THREE.BufferGeometry) {
+        const geom = object.geometry;
+        if (geom.index && geom.index.count) {
+          info.index += geom.index.count;
+        } else if (geom.attributes.position) {
+          const pos = geom.attributes.position;
+          if (pos.count && pos.itemSize) {
+            info.index += Math.round(pos.count / pos.itemSize);
+          }
+        }
+      }
+    }
   }
 };

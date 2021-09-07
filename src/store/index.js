@@ -11,7 +11,8 @@ export default new Vuex.Store({
       intensity: 1
     },
     lights: [],
-    boundingBox: null
+    boundingBox: null,
+    showLoading: false
   },
   mutations: {
     path_model_option(state, value) {
@@ -25,6 +26,9 @@ export default new Vuex.Store({
     },
     patch_boundingbox(state, value) {
       state.boundingBox = value
+    },
+    patch_loading(state, loading) {
+      state.showLoading = loading
     }
   },
   actions: {},
