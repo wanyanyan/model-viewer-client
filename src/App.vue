@@ -2,15 +2,18 @@
   <div id="app">
     <router-view/>
     <LoadingBar :show="showLoading"/>
+    <GeneratePreference />
   </div>
 </template>
 
 <script>
 import {mapState} from 'vuex'
 import LoadingBar from './components/LoadingBar.vue'
+import GeneratePreference from './components/GeneratePreference.vue'
 export default {
   components: {
-    LoadingBar
+    LoadingBar,
+    GeneratePreference
   },
   computed: {
     ...mapState({

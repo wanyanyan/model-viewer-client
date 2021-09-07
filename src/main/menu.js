@@ -1,5 +1,15 @@
 const { Menu } = require('electron')
-const template = [{
+var window = null
+
+function createMenu(win) {
+  window = win
+  let template = getTemplate()
+  var list = Menu.buildFromTemplate(template)
+  Menu.setApplicationMenu(list)
+}
+
+function getTemplate() {
+  return [{
       label: '文件',
       submenu: [{
         label: '打开本地文件'
@@ -18,7 +28,10 @@ const template = [{
         },
         { type: 'separator' },
         {
-          label: '生成配置文件'
+          label: '生成配置文件',
+          click: () => {
+            window.webContents.send('generate_preference_dlg', 'whoooooooh!')
+          }
         }
       ]
     },
@@ -32,10 +45,5 @@ const template = [{
     ]
   }
 ]
-
-function createMenu() {
-  var list = Menu.buildFromTemplate(template)
-  Menu.setApplicationMenu(list)
 }
-
 export default createMenu

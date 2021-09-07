@@ -4,6 +4,7 @@ import { app, protocol, BrowserWindow, ipcMain, dialog } from "electron";
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import server from './server'
 import createMenu from './main/menu'
+import initPreference from './main/reference'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -29,7 +30,8 @@ async function createWindow () {
     }
   })
   
-  createMenu()
+  createMenu(win)
+  initPreference()
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode

@@ -1,6 +1,6 @@
 <template>
   <div class="upload">
-    <Button class="btn" type="warning" @click="openfile" style="margin: 10px;width: 100px;">打开模型</Button>
+    <Button class="btn" type="warning" @click="openfileDlg" style="margin: 10px;width: 100px;">打开模型</Button>
     <div class="title">光照</div>
     <div class="card">
       <div class="name">环境光</div>
@@ -50,17 +50,17 @@ export default {
     LightForm
   },
   methods: {
-    openfile() {
+    openfileDlg() {
       ipcRenderer.send("openDialog")
-      ipcRenderer.on("selectedItem", (event, fileInfo)=>{
-        if (Constants.formats.indexOf(fileInfo.filetype) === -1) {
-          this.$Modal.error({
-            title: '不支持的格式',
-            content: ''
-          });
-        }
-        this.$store.commit('path_model_option', fileInfo)
-      })
+    },
+    openfile(event, fileInfo) {
+      if (Constants.formats.indexOf(fileInfo.filetype) === -1) {
+        this.$Modal.error({
+          title: '不支持的格式',
+          content: ''
+        });
+      }
+      this.$store.commit('path_model_option', fileInfo)
     },
     lightChange() {
       this.$store.commit('patch_environment', {
@@ -90,7 +90,7 @@ export default {
     }
   },
   mounted() {
-
+    ipcRenderer.on("selectedItem", this.openfile)
   },
   data() {
     return {
