@@ -237,5 +237,31 @@ export default {
         object.userData[key] = properties[key]
       }
     }
+  },
+  degree2radian(degree) {
+    return degree * (Math.PI / 180)
+  },
+  getCenterFromBox3(box) {
+    return [
+      (box.min.x + box.max.x) / 2,
+      (box.min.y + box.max.y) / 2,
+      (box.min.z + box.max.z) / 2
+    ];
+  },
+  rotate(object, rotation) {
+    rotation = rotation.map(d => this.degree2radian(d))
+    let box = new THREE.Box3().setFromObject(object);
+    let center = this.getCenterFromBox3(box)
+    let m1 = new THREE.Matrix4().makeTranslation(-center[0], -center[1], -center[2])
+    let m2 = new THREE.Matrix4().makeRotationX(rotation[0])
+    let m3 = new THREE.Matrix4().makeRotationY(rotation[1])
+    let m4 = new THREE.Matrix4().makeRotationZ(rotation[2])
+    let m5 = new THREE.Matrix4().makeTranslation(center[0], center[1], center[2])
+    let m = m5.multiply(m4).multiply(m3).multiply(m2).multiply(m1)
+    object.applyMatrix4(m)
+  },
+  translate(object, translation) {
+    let m = new THREE.Matrix4().makeTranslation(...translation)
+    object.applyMatrix4(m)
   }
 };

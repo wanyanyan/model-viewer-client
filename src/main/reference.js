@@ -1,4 +1,4 @@
-import { ipcMain, dialog } from "electron";
+import { ipcMain, dialog } from "electron"
 import fs from 'fs'
 import path from 'path'
 import Constants from '../libs/constants'

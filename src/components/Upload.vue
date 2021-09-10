@@ -51,7 +51,7 @@ export default {
   },
   methods: {
     openfileDlg() {
-      ipcRenderer.send("openDialog")
+      ipcRenderer.send("open_local_model")
     },
     openfile(event, fileInfo) {
       if (Constants.formats.indexOf(fileInfo.filetype) === -1) {
@@ -90,7 +90,7 @@ export default {
     }
   },
   mounted() {
-    ipcRenderer.on("selectedItem", this.openfile)
+    ipcRenderer.on("selected_local_models", this.openfile)
   },
   data() {
     return {

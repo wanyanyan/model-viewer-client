@@ -1,4 +1,5 @@
 const { Menu } = require('electron')
+import {openLocalModel} from './model_import'
 var window = null
 
 function createMenu(win) {
@@ -12,7 +13,10 @@ function getTemplate() {
   return [{
       label: '文件',
       submenu: [{
-        label: '打开本地文件'
+        label: '打开本地文件',
+        click: () => {
+          openLocalModel()
+        }
       }, {
         label: '国际新闻'
       }]
@@ -21,7 +25,10 @@ function getTemplate() {
       label: '工具',
       submenu: [
         {
-          label: 'obj转gltf/glb'
+          label: 'obj转gltf/glb',
+          click: () => {
+            window.webContents.send('obj_gltf_dlg')
+          }
         },
         {
           label: 'obj转drc'

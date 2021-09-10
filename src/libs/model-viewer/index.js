@@ -5,11 +5,11 @@ import * as THREE from "three"
 import light from './light'
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js"
 import CONSTANTS from './constant'
-import shortid from 'shortid'
 
 class ModelViewer extends Event {
   constructor(options) {
     super()
+    window.THREE = THREE
     this.options = Object.assign({}, CONSTANTS.options, options)
     let { container, type, url } = options
     if (typeof container === "string") {
@@ -34,6 +34,7 @@ class ModelViewer extends Event {
     window.addEventListener("resize", () => {
       this._onWindowResize()
     })
+    this._bindEvent()
   }
 
   _init() {
@@ -66,6 +67,9 @@ class ModelViewer extends Event {
     this.timer = requestAnimationFrame(() => {
       this._render()
     })
+    /* if (myObject) {
+      myObject.rotation.y += 0.01
+    } */
   }
 
   _createStats() {
@@ -130,7 +134,7 @@ class ModelViewer extends Event {
 
   _addModels(list, parent) {
     list.forEach(option => {
-      let { id, type, format, name, model, properties, models, ref, location, transform } = option
+      let { id, type, format, name, model, properties, models, ref, location, rotation } = option
       if (type === 'model') { // 实体模型
         this._addModel({
           id,
@@ -147,9 +151,9 @@ class ModelViewer extends Event {
           properties,
           ref,
           location,
-          transform,
+          rotation,
           parent
-        })
+        });
       } else if (type === 'group') {
         this._addGroup({
           id,
@@ -189,14 +193,21 @@ class ModelViewer extends Event {
   }
 
   _addVirtualModel(options) {
-    let {ref, location, transform, parent} = options
+    let {ref, location, rotation, parent} = options
     let sourceObject = this.scene.getObjectByProperty('fid', ref)
     if (!sourceObject) {
       return
     }
     let targetObject = sourceObject.clone()
     util.assignObject(targetObject, options)
-    targetObject.position.set(...location)
+    targetObject.traverse(e => {
+      if (e.isMesh) {
+        e.castShadow = true;
+        e.receiveShadow = true;
+      }
+    });
+    util.rotate(targetObject, rotation)
+    util.translate(targetObject, location)
     if (this._needBoundingBox) {  // 计算包围盒
       let box3 = new THREE.Box3()
       box3.expandByObject(targetObject)
@@ -295,11 +306,7 @@ class ModelViewer extends Event {
     if (!this.boundingBox) {
       return
     }
-    let center = [
-      (this.boundingBox.min.x + this.boundingBox.max.x) / 2,
-      (this.boundingBox.min.y + this.boundingBox.max.y) / 2,
-      (this.boundingBox.min.z + this.boundingBox.max.z) / 2
-    ]
+    let center = util.getCenterFromBox3(this.boundingBox)
     this.controls.target.set(...center)
     // 水平对角线
     let diagonalLength1 = Math.sqrt(
@@ -340,6 +347,16 @@ class ModelViewer extends Event {
       components: info.components,
       index: Math.round(info.index / 3),
       time: this.endTime - this.startTime
+    }
+  }
+
+  _bindEvent() {
+    let canvas = this.renderer.domElement
+    canvas.onclick = (e) => {
+      this.fire('click', e)
+    }
+    canvas.onmousemove = (e) => {
+      this.fire('mousemove', e)
     }
   }
 }

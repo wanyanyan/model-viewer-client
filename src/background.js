@@ -2,9 +2,12 @@
 
 import { app, protocol, BrowserWindow, ipcMain, dialog } from "electron";
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
-import server from './server'
+import server from './main/server'
 import createMenu from './main/menu'
+import { initModelImport } from './main/model_import'
 import initPreference from './main/reference'
+import initObj2Gltf from './main/obj2gltf'
+import initObj2Drc from './main/obj2drc'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -32,6 +35,9 @@ async function createWindow () {
   
   createMenu(win)
   initPreference()
+  initModelImport(win)
+  initObj2Gltf()
+  initObj2Drc();
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
@@ -90,35 +96,3 @@ if (isDevelopment) {
   }
 }
 
-ipcMain.on("openDialog", e => {
-  server.remove();
-  dialog
-    .showOpenDialog({
-      filters: [
-        { name: "GLTF", extensions: ["gltf", "glb"] },
-        { name: "OBJ", extensions: ["obj"] },
-        { name: "DRC", extensions: ["drc"] },
-        { name: "ModelSet", extensions: ["json"] },
-        { name: "All Files", extensions: ["*"] }
-      ],
-      properties: ["openFile"]
-    })
-    .then(result => {
-      let { canceled, filePaths } = result;
-      if (canceled) {
-        return;
-      } else {
-        let path = filePaths[0];
-        let arr = path.split("\\");
-        let file = arr.pop().split(".");
-        let info = {
-          baseUrl: arr.join("\\"),
-          filename: file[0],
-          filetype: file[1]
-        };
-        server.create(info.baseUrl, () => {
-          e.reply("selectedItem", info);
-        });
-      }
-    });
-});

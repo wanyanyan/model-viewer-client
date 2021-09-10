@@ -3,6 +3,8 @@
     <router-view/>
     <LoadingBar :show="showLoading"/>
     <GeneratePreference />
+    <Obj2Gltf />
+    <Obj2Drc />
   </div>
 </template>
 
@@ -10,10 +12,14 @@
 import {mapState} from 'vuex'
 import LoadingBar from './components/LoadingBar.vue'
 import GeneratePreference from './components/GeneratePreference.vue'
+import Obj2Gltf from './components/Obj2Gltf.vue'
+import Obj2Drc from './components/Obj2Drc.vue'
 export default {
   components: {
     LoadingBar,
-    GeneratePreference
+    GeneratePreference,
+    Obj2Gltf,
+    Obj2Drc
   },
   computed: {
     ...mapState({
