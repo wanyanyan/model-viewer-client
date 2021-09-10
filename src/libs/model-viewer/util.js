@@ -263,5 +263,15 @@ export default {
   translate(object, translation) {
     let m = new THREE.Matrix4().makeTranslation(...translation)
     object.applyMatrix4(m)
+  },
+  findObjectByChild(child) { // 给定一个mesh，找出这个mesh属于哪个模型文件
+    if (!child.parent) {
+      return null
+    }
+    if (child.parent.fid) {
+      return child.parent
+    } else {
+      return this.findObjectByChild(child.parent);
+    }
   }
-};
+}

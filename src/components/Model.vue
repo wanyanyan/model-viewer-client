@@ -23,6 +23,7 @@ import ModelViewer from '../libs/model-viewer'
 import {mapState} from 'vuex'
 import _ from 'lodash'
 import Info from './Info.vue'
+import * as THREE from "three"
 export default {
   components: {
     Info
@@ -37,10 +38,18 @@ export default {
           position: 'top-right'
         }
       });
+      this.viewer.on('click', this.sceneClick)
       window.viewer = this.viewer
+      const box = new THREE.Box3();
+      box.setFromCenterAndSize( new THREE.Vector3( 1, 1, 1 ), new THREE.Vector3( 2, 1, 3 ) );
+
+      this.boxHelper = new THREE.Box3Helper( box, 0xffff00 );
+      this.boxHelper.visible = false
+      this.viewer.scene.add( this.boxHelper );
     },
     addModel() {
       this.viewer.removeAll()
+      this.boxHelper.visible = false
       if (this.modelOption) {
         let {filename, filetype} = this.modelOption
         let type = filetype
@@ -86,9 +95,26 @@ export default {
     },
     showDetails() {
       let info = this.viewer.getStatistics()
-      console.log(info)
       this.staInfo = info
       this.dialogShow = true
+    },
+    sceneClick(e) {
+      let objects = this.viewer.queryObjects(e.point)
+      this.selectedObject = objects[0] || null
+      if (this.selectedObject) {
+        let box3 = new THREE.Box3()
+        box3.expandByObject(this.selectedObject)
+        this.boxHelper.box = box3
+        this.boxHelper.visible = true
+        let properties = Object.assign({
+          id: this.selectedObject.fid,
+          name: this.selectedObject.name
+        }, this.selectedObject.userData)
+        this.$store.commit('patch_properties', properties)
+      } else {
+        this.boxHelper.visible = false
+        this.$store.commit('patch_properties', null)
+      }
     }
   },
   mounted() {

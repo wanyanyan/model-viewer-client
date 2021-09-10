@@ -353,11 +353,41 @@ class ModelViewer extends Event {
   _bindEvent() {
     let canvas = this.renderer.domElement
     canvas.onclick = (e) => {
-      this.fire('click', e)
+      this.fire("click", {
+        point: { x: e.offsetX, y: e.offsetY },
+        originalEvent: e
+      })
     }
     canvas.onmousemove = (e) => {
-      this.fire('mousemove', e)
+      this.fire('mousemove', {
+        point: {x: e.offsetX, y: e.offsetY},
+        originalEvent: e
+      })
     }
+  }
+
+  queryObjects(point) {
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+    mouse.x = (point.x /this.width) * 2 - 1;
+    mouse.y = -(point.y / this.height) * 2 + 1;
+    raycaster.setFromCamera(mouse, this.camera);
+    let allMeshs = []
+    this.objectGroup.traverse(e => {
+      if (e.isMesh) {
+        allMeshs.push(e)
+      }
+    })
+    const intersects = raycaster.intersectObjects(allMeshs)
+    var objs = [];
+    for (var i = 0; i < intersects.length; i++) {
+      var intersect = util.findObjectByChild(intersects[i].object);
+      if (objs.indexOf(intersect) === -1) {
+        objs.push(intersect);
+      }
+    }
+
+    return objs
   }
 }
 

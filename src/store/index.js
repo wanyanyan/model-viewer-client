@@ -12,7 +12,8 @@ export default new Vuex.Store({
     },
     lights: [],
     boundingBox: null,
-    showLoading: false
+    showLoading: false,
+    properties: null
   },
   mutations: {
     path_model_option(state, value) {
@@ -29,6 +30,9 @@ export default new Vuex.Store({
     },
     patch_loading(state, loading) {
       state.showLoading = loading
+    },
+    patch_properties(state, value) {
+      state.properties = value
     }
   },
   actions: {},
