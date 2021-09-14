@@ -87,7 +87,12 @@ export default {
     return { baseUrl: arr.join("/"), filename: file[0], filetype: file[1] };
   },
   loadGlb(url, callback) {
-    new GLTFLoader().load(url, gltf => {
+    let loader = new GLTFLoader()
+    let dracoLoader = new DRACOLoader();
+    dracoLoader.setDecoderPath("./lib/");
+    dracoLoader.setDecoderConfig({ type: "js" });
+    loader.setDRACOLoader(dracoLoader)
+    loader.load(url, gltf => {
       let object = gltf.scene;
       if (callback) {
         callback(object);
@@ -109,19 +114,26 @@ export default {
 
   loadDrc(url, callback) {
     let { baseUrl, filename, filetype } = this.parseUrl(url);
-    new MTLLoader().load(`${baseUrl}/${filename}.mtl`, function(materials) {
+    new MTLLoader().loadAsync(`${baseUrl}/${filename}.mtl`).then((materials) => {
       materials.preload();
+      loaded(materials.materials[Object.keys(materials.materials)[0]]);
+    }).catch(err => {
+      loaded(null)
+    })
+    function loaded(material) {
       let dracoLoader = new DRACOLoader();
       dracoLoader.setDecoderPath("./lib/");
       dracoLoader.setDecoderConfig({ type: "js" });
       dracoLoader.load(url, geometry => {
-        let material = materials.materials[Object.keys(materials.materials)[0]];
+        if (!material) {
+          material = new THREE.MeshLambertMaterial({ color: 0xcccccc });
+        }
         let object = new THREE.Mesh(geometry, material);
         if (callback) {
           callback(object);
         }
       });
-    });
+    }
   },
   createSky(scene) {
     let sky = new Sky();

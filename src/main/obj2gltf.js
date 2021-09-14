@@ -2,6 +2,7 @@ import { ipcMain, dialog } from "electron"
 import fs from 'fs'
 import path from 'path'
 import obj2gltf from '@wanyanyan/obj2gltf'
+import gltfPipeline from '@wanyanyan/gltf-pipeline'
 
 function initObj2Gltf() {
   ipcMain.on("obj_gltf_input", openInputPath)
@@ -44,7 +45,7 @@ function openOutputPath(e) {
 }
 
 function startConvert(e, options) {
-  let {inputs, binary, outputPath} = options
+  let {inputs, binary, draco, compress_level, outputPath} = options
   let total = inputs.length
   let currentIndex = 0
   inputs.forEach(fullpath => {
@@ -52,12 +53,32 @@ function startConvert(e, options) {
     let objpath = path.dirname(fullpath)
     if (binary) {
       obj2gltf(fullpath, { binary: true }).then(function (glb) {
-        fs.writeFile(path.resolve(outputPath || objpath, `${objname}.glb`), glb, cb)
+        if (draco) {
+          gltfPipeline.processGlb(glb, {
+            dracoOptions: {
+              compressionLevel: compress_level
+            }
+          }).then(results => {
+            fs.writeFile(path.resolve(outputPath || objpath, `${objname}.glb`), results.glb, cb)
+          })
+        } else {
+          fs.writeFile(path.resolve(outputPath || objpath, `${objname}.glb`), glb, cb)
+        }
       })
     } else {
       obj2gltf(fullpath).then(function (gltf) {
         const data = Buffer.from(JSON.stringify(gltf))
-        fs.writeFile(path.resolve(outputPath || objpath, `${objname}.gltf`), data, cb)
+        if (draco) {
+          gltfPipeline.processGltf(data, {
+            dracoOptions: {
+              compressionLevel: compress_level
+            }
+          }).then(results => {
+            fs.writeFile(path.resolve(outputPath || objpath, `${objname}.gltf`), results.gltf, cb)
+          })
+        } else {
+          fs.writeFile(path.resolve(outputPath || objpath, `${objname}.gltf`), data, cb)
+        }
       })
     }
   })

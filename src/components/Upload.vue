@@ -54,12 +54,6 @@ export default {
       ipcRenderer.send("open_local_model")
     },
     openfile(event, fileInfo) {
-      if (Constants.formats.indexOf(fileInfo.filetype) === -1) {
-        this.$Modal.error({
-          title: '不支持的格式',
-          content: ''
-        });
-      }
       this.$store.commit('path_model_option', fileInfo)
     },
     lightChange() {

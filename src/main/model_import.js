@@ -7,18 +7,21 @@ export const initModelImport = (win) => {
   ipcMain.on("open_local_model", openLocalModel)
 }
 
-export const openLocalModel = (e) => {
+function openFileSelect(e, mode) {
   server.remove();
   dialog
     .showOpenDialog({
       filters: [
-        { name: "All Model Files", extensions: ["gltf", "glb", "obj", "drc", "json"] },
+        {
+          name: "All Model Files",
+          extensions: ["gltf", "glb", "obj", "drc", "json"]
+        },
         { name: "GLTF", extensions: ["gltf", "glb"] },
         { name: "OBJ", extensions: ["obj"] },
         { name: "DRC", extensions: ["drc"] },
         { name: "ModelSet", extensions: ["json"] }
       ],
-      properties: ["openFile"]
+      properties: ["openFile", "multiSelections"]
     })
     .then(result => {
       let { canceled, filePaths } = result;
@@ -27,19 +30,28 @@ export const openLocalModel = (e) => {
       } else {
         let path = filePaths[0];
         let arr = path.split("\\");
-        let file = arr.pop().split(".");
+        arr.pop();
         let info = {
-          baseUrl: arr.join("\\"),
-          filename: file[0],
-          filetype: file[1]
-        };
+          mode,
+          paths: filePaths,
+          baseUrl: arr.join("\\")
+        }
         server.create(info.baseUrl, () => {
           if (e) {
             e.reply("selected_local_models", info);
           } else {
             window.webContents.send("selected_local_models", info);
           }
-        });
+        })
       }
-    });
+    })
+}
+
+
+export const openLocalModel = (e) => {
+  openFileSelect(e, 'open')
+}
+
+export const importLocalModel = (e) => {
+  openFileSelect(e, "add")
 }

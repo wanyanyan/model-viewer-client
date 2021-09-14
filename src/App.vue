@@ -6,6 +6,7 @@
     <Obj2Gltf />
     <Obj2Drc />
     <PropertiesPanel v-if="info"/>
+    <MessageBox />
   </div>
 </template>
 
@@ -16,13 +17,15 @@ import GeneratePreference from './components/GeneratePreference.vue'
 import Obj2Gltf from './components/Obj2Gltf.vue'
 import Obj2Drc from './components/Obj2Drc.vue'
 import PropertiesPanel from './components/PropertyPanel.vue'
+import MessageBox from './components/MessageBox.vue'
 export default {
   components: {
     LoadingBar,
     GeneratePreference,
     Obj2Gltf,
     Obj2Drc,
-    PropertiesPanel
+    PropertiesPanel,
+    MessageBox
   },
   computed: {
     ...mapState({

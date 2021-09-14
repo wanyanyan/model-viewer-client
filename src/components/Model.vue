@@ -48,18 +48,26 @@ export default {
       this.viewer.scene.add( this.boxHelper );
     },
     addModel() {
-      this.viewer.removeAll()
       this.boxHelper.visible = false
       if (this.modelOption) {
-        let {filename, filetype} = this.modelOption
-        let type = filetype
-        if (filetype === 'glb') {
-          type = 'gltf'
+        let {mode, paths} = this.modelOption
+        if (mode === 'open') {
+          this.viewer.removeAll()
         }
-        if (filetype === 'json') {
-          type = 'modelset'
-        }
-        this.viewer.loadModels(type, `http://127.0.0.1:10024/${filename}.${filetype}`)
+        paths.forEach(path => {
+          let arr = path.split("\\");
+          let file = arr.pop().split(".");
+          let filename = file[0]
+          let filetype = file[1]
+          let type = filetype
+          if (filetype === 'glb') {
+            type = 'gltf'
+          }
+          if (filetype === 'json') {
+            type = 'modelset'
+          }
+          this.viewer.loadModels(type, `http://127.0.0.1:10024/${filename}.${filetype}`)
+        })
         this.$store.commit('patch_loading', true)
       } else {
         this.viewer.loadModels('gltf', './example.glb')

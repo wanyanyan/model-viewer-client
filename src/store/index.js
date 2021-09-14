@@ -7,32 +7,36 @@ export default new Vuex.Store({
   state: {
     modelOption: null,
     environment: {
-      color: '#ffffff',
+      color: "#ffffff",
       intensity: 1
     },
     lights: [],
     boundingBox: null,
     showLoading: false,
-    properties: null
+    properties: null,
+    error: {}
   },
   mutations: {
     path_model_option(state, value) {
       state.modelOption = value;
     },
     patch_lights(state, value) {
-      state.lights = value
+      state.lights = value;
     },
     patch_environment(state, value) {
-      state.environment = value
+      state.environment = value;
     },
     patch_boundingbox(state, value) {
-      state.boundingBox = value
+      state.boundingBox = value;
     },
     patch_loading(state, loading) {
-      state.showLoading = loading
+      state.showLoading = loading;
     },
     patch_properties(state, value) {
-      state.properties = value
+      state.properties = value;
+    },
+    ui_show_error(state, error) {
+      state.error = error;
     }
   },
   actions: {},
