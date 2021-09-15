@@ -3,6 +3,7 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
+import {FBXLoader} from "three/examples/jsm/loaders/FBXLoader"
 import {Sky} from 'three/examples/jsm/objects/Sky'
 import shortid from "shortid";
 
@@ -134,6 +135,13 @@ export default {
         }
       });
     }
+  },
+  loadFbx(url, callback) {
+    new FBXLoader().load(url, function(object) {
+      if (callback) {
+        callback(object)
+      }
+    });
   },
   createSky(scene) {
     let sky = new Sky();

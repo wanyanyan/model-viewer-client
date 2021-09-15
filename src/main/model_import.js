@@ -14,10 +14,11 @@ function openFileSelect(e, mode) {
       filters: [
         {
           name: "All Model Files",
-          extensions: ["gltf", "glb", "obj", "drc", "json"]
+          extensions: ["gltf", "glb", "obj", "drc", "fbx", "json"]
         },
         { name: "GLTF", extensions: ["gltf", "glb"] },
         { name: "OBJ", extensions: ["obj"] },
+        { name: "FBX", extensions: ["fbx"] },
         { name: "DRC", extensions: ["drc"] },
         { name: "ModelSet", extensions: ["json"] }
       ],
@@ -35,16 +36,16 @@ function openFileSelect(e, mode) {
           mode,
           paths: filePaths,
           baseUrl: arr.join("\\")
-        }
+        };
         server.create(info.baseUrl, () => {
           if (e) {
             e.reply("selected_local_models", info);
           } else {
             window.webContents.send("selected_local_models", info);
           }
-        })
+        });
       }
-    })
+    });
 }
 
 

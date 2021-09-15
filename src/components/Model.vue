@@ -59,7 +59,7 @@ export default {
           let file = arr.pop().split(".");
           let filename = file[0]
           let filetype = file[1]
-          let type = filetype
+          let type = filetype.toLowerCase()
           if (filetype === 'glb') {
             type = 'gltf'
           }

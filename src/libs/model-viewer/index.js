@@ -172,12 +172,21 @@ class ModelViewer extends Event {
     let cb = (object) => {
       this._modelLoaded(object, options)
     }
-    if (format === "gltf") {
-      util.loadGlb(url, cb)
-    } else if (format === "obj") {
-      util.loadObj(url, cb)
-    } else {
-      util.loadDrc(url, cb)
+    switch(format) {
+      case 'gltf':
+        util.loadGlb(url, cb);
+        break;
+      case 'obj':
+        util.loadObj(url, cb);
+        break;
+      case 'drc':
+        util.loadDrc(url, cb);
+        break;
+      case 'fbx':
+        util.loadFbx(url, cb);
+        break;
+      default:
+        cb(null)
     }
   }
 
@@ -221,22 +230,26 @@ class ModelViewer extends Event {
   }
 
   _modelLoaded(object, options) {
-    util.assignObject(object, options)
-    object.traverse(e => { // 启用阴影
-      if (e.isMesh) {
-        e.castShadow = true
-        e.receiveShadow = true
+    if (object) {
+      util.assignObject(object, options);
+      object.traverse(e => {
+        // 启用阴影
+        if (e.isMesh) {
+          e.castShadow = true;
+          e.receiveShadow = true;
+        }
+      });
+      if (this._needBoundingBox) {
+        // 计算包围盒
+        let box3 = new THREE.Box3();
+        box3.expandByObject(object);
+        this.boundingBox = util.mergeBoundingBox(this.boundingBox, box3);
       }
-    })
-    if (this._needBoundingBox) {  // 计算包围盒
-      let box3 = new THREE.Box3()
-      box3.expandByObject(object)
-      this.boundingBox = util.mergeBoundingBox(this.boundingBox, box3)
-    }
-    if (options.parent) {
-      options.parent.add(object)
-    } else {
-      this.objectGroup.add(object)
+      if (options.parent) {
+        options.parent.add(object);
+      } else {
+        this.objectGroup.add(object);
+      }
     }
     this._loadIndex++
     if (this._loadIndex >= this._totalModels) { // 实体模型加载完成

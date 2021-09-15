@@ -23,7 +23,7 @@ function convert(srcFile, destFile, opts = []) {
   return new Promise((resolve, reject) => {
     try {
       let binExt = os.type() === 'Windows_NT' ? '.exe' : '';
-      let tool = path.join(__dirname, 'bin', os.type(), 'FBX2glTF' + binExt);
+      let tool = path.join(__dirname, 'fbx2gltf', os.type(), 'FBX2glTF' + binExt);
       if (!fs.existsSync(tool)) {
         throw new Error(`No Convert Tool: ${tool}`);
       }
