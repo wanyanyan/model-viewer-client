@@ -1,0 +1,76 @@
+[2021-09-15 14:05:48.765] [error] (node:4032) DeprecationWarning: file property is deprecated and will be removed in v5.
+(Use `electron --trace-deprecation ...` to show where the warning was created)
+[2021-09-15 14:05:48.811] [error] (node:4032) ExtensionLoadWarning: Warnings loading extension at C:\Users\wanya\AppData\Roaming\model-viewer-client\extensions\nhdogjmejiglipccpnnnanhbledajbpd:
+  Unrecognized manifest key 'browser_action'.
+  Unrecognized manifest key 'update_url'.
+  Permission 'contextMenus' is unknown or URL pattern is malformed.
+  Cannot load extension with file or directory name _metadata. Filenames starting with "_" are reserved for use by the system.
+
+[2021-09-15 14:06:16.721] [error] UnhandledRejection Error: No Convert Tool: D:\CommonTools\model-viewer-client\dist_electron\bin\Windows_NT\FBX2glTF.exe
+    at eval (webpack:///./node_modules/fbx2gltf/index.js?:33:15)
+    at new Promise (<anonymous>)
+    at convert (webpack:///./node_modules/fbx2gltf/index.js?:28:10)
+    at eval (webpack:///./src/main/fbx2gltf.js?:70:52)
+    at Array.forEach (<anonymous>)
+    at IpcMainImpl.startConvert (webpack:///./src/main/fbx2gltf.js?:59:10)
+    at IpcMainImpl.emit (events.js:315:20)
+    at Object.<anonymous> (electron/js2c/browser_init.js:161:9469)
+    at Object.emit (events.js:315:20)
+[2021-09-15 14:25:34.967] [error] (node:10076) DeprecationWarning: file property is deprecated and will be removed in v5.
+(Use `electron --trace-deprecation ...` to show where the warning was created)
+[2021-09-15 14:25:35.010] [error] (node:10076) ExtensionLoadWarning: Warnings loading extension at C:\Users\wanya\AppData\Roaming\model-viewer-client\extensions\nhdogjmejiglipccpnnnanhbledajbpd:
+  Unrecognized manifest key 'browser_action'.
+  Unrecognized manifest key 'update_url'.
+  Permission 'contextMenus' is unknown or URL pattern is malformed.
+  Cannot load extension with file or directory name _metadata. Filenames starting with "_" are reserved for use by the system.
+
+[2021-09-15 14:27:35.012] [error] (node:26148) DeprecationWarning: file property is deprecated and will be removed in v5.
+(Use `electron --trace-deprecation ...` to show where the warning was created)
+[2021-09-15 14:27:35.057] [error] (node:26148) ExtensionLoadWarning: Warnings loading extension at C:\Users\wanya\AppData\Roaming\model-viewer-client\extensions\nhdogjmejiglipccpnnnanhbledajbpd:
+  Unrecognized manifest key 'browser_action'.
+  Unrecognized manifest key 'update_url'.
+  Permission 'contextMenus' is unknown or URL pattern is malformed.
+  Cannot load extension with file or directory name _metadata. Filenames starting with "_" are reserved for use by the system.
+
+[2021-09-15 14:28:19.006] [error] (node:25264) DeprecationWarning: file property is deprecated and will be removed in v5.
+(Use `electron --trace-deprecation ...` to show where the warning was created)
+[2021-09-15 14:28:19.049] [error] (node:25264) ExtensionLoadWarning: Warnings loading extension at C:\Users\wanya\AppData\Roaming\model-viewer-client\extensions\nhdogjmejiglipccpnnnanhbledajbpd:
+  Unrecognized manifest key 'browser_action'.
+  Unrecognized manifest key 'update_url'.
+  Permission 'contextMenus' is unknown or URL pattern is malformed.
+  Cannot load extension with file or directory name _metadata. Filenames starting with "_" are reserved for use by the system.
+
+[2021-09-15 14:28:27.578] [error] UnhandledRejection Error: No Convert Tool: D:\CommonTools\model-viewer-client\dist_electron\bin\Windows_NT\FBX2glTF.exe
+    at eval (webpack:///./node_modules/fbx2gltf/index.js?:33:15)
+    at new Promise (<anonymous>)
+    at convert (webpack:///./node_modules/fbx2gltf/index.js?:28:10)
+    at eval (webpack:///./src/main/fbx2gltf.js?:70:52)
+    at Array.forEach (<anonymous>)
+    at IpcMainImpl.startConvert (webpack:///./src/main/fbx2gltf.js?:59:10)
+    at IpcMainImpl.emit (events.js:315:20)
+    at Object.<anonymous> (electron/js2c/browser_init.js:161:9469)
+    at Object.emit (events.js:315:20)
+[2021-09-15 14:33:03.067] [error] (node:19612) DeprecationWarning: file property is deprecated and will be removed in v5.
+(Use `electron --trace-deprecation ...` to show where the warning was created)
+[2021-09-15 14:33:03.113] [error] (node:19612) ExtensionLoadWarning: Warnings loading extension at C:\Users\wanya\AppData\Roaming\model-viewer-client\extensions\nhdogjmejiglipccpnnnanhbledajbpd:
+  Unrecognized manifest key 'browser_action'.
+  Unrecognized manifest key 'update_url'.
+  Permission 'contextMenus' is unknown or URL pattern is malformed.
+  Cannot load extension with file or directory name _metadata. Filenames starting with "_" are reserved for use by the system.
+
+[2021-09-15 14:33:40.424] [error] (node:25400) DeprecationWarning: file property is deprecated and will be removed in v5.
+(Use `electron --trace-deprecation ...` to show where the warning was created)
+[2021-09-15 14:33:40.468] [error] (node:25400) ExtensionLoadWarning: Warnings loading extension at C:\Users\wanya\AppData\Roaming\model-viewer-client\extensions\nhdogjmejiglipccpnnnanhbledajbpd:
+  Unrecognized manifest key 'browser_action'.
+  Unrecognized manifest key 'update_url'.
+  Permission 'contextMenus' is unknown or URL pattern is malformed.
+  Cannot load extension with file or directory name _metadata. Filenames starting with "_" are reserved for use by the system.
+
+[2021-09-15 14:36:54.027] [error] (node:18708) DeprecationWarning: file property is deprecated and will be removed in v5.
+(Use `electron --trace-deprecation ...` to show where the warning was created)
+[2021-09-15 14:36:54.069] [error] (node:18708) ExtensionLoadWarning: Warnings loading extension at C:\Users\wanya\AppData\Roaming\model-viewer-client\extensions\nhdogjmejiglipccpnnnanhbledajbpd:
+  Unrecognized manifest key 'browser_action'.
+  Unrecognized manifest key 'update_url'.
+  Permission 'contextMenus' is unknown or URL pattern is malformed.
+  Cannot load extension with file or directory name _metadata. Filenames starting with "_" are reserved for use by the system.
+

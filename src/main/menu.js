@@ -51,7 +51,10 @@ function getTemplate() {
           }
         },
         {
-          label: "obj转drc"
+          label: "fbx转gltf/glb",
+          click: () => {
+            window.webContents.send("fbx_gltf_dlg");
+          }
         },
         { type: "separator" },
         {

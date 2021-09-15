@@ -8,6 +8,8 @@ import { initModelImport } from './main/model_import'
 import initPreference from './main/reference'
 import initObj2Gltf from './main/obj2gltf'
 import initObj2Drc from './main/obj2drc'
+import initFbx2Gltf from './main/fbx2gltf'
+import './main/log'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -37,7 +39,8 @@ async function createWindow () {
   initPreference()
   initModelImport(win)
   initObj2Gltf()
-  initObj2Drc();
+  initObj2Drc()
+  initFbx2Gltf()
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode

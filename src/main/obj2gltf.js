@@ -3,6 +3,7 @@ import fs from 'fs'
 import path from 'path'
 import obj2gltf from '@wanyanyan/obj2gltf'
 import gltfPipeline from '@wanyanyan/gltf-pipeline'
+import log from 'electron-log'
 
 function initObj2Gltf() {
   ipcMain.on("obj_gltf_input", openInputPath)
@@ -60,6 +61,8 @@ function startConvert(e, options) {
             }
           }).then(results => {
             fs.writeFile(path.resolve(outputPath || objpath, `${objname}.glb`), results.glb, cb)
+          }).catch(err => {
+            log.error(err.message);
           })
         } else {
           fs.writeFile(path.resolve(outputPath || objpath, `${objname}.glb`), glb, cb)
@@ -75,6 +78,8 @@ function startConvert(e, options) {
             }
           }).then(results => {
             fs.writeFile(path.resolve(outputPath || objpath, `${objname}.gltf`), results.gltf, cb)
+          }).catch(err => {
+            log.error(err.message);
           })
         } else {
           fs.writeFile(path.resolve(outputPath || objpath, `${objname}.gltf`), data, cb)

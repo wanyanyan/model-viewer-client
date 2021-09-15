@@ -29,7 +29,7 @@
       </Form>
       <div class="footer">
         <div class="action">
-          <Button class="btn" @click="cancel" size="small" :disabled="converting" style="width: 80px;margin-right: 20px;">取消</Button>
+          <Button class="btn" @click="cancel" size="small" style="width: 80px;margin-right: 20px;">取消</Button>
           <Button class="btn" type="primary" size="small" @click="ok" :disabled="converting" style="width: 80px;">开始</Button>
         </div>
       </div>

@@ -7,6 +7,7 @@
     <Obj2Drc />
     <PropertiesPanel v-if="info"/>
     <MessageBox />
+    <Fbx2Gltf />
   </div>
 </template>
 
@@ -18,6 +19,7 @@ import Obj2Gltf from './components/Obj2Gltf.vue'
 import Obj2Drc from './components/Obj2Drc.vue'
 import PropertiesPanel from './components/PropertyPanel.vue'
 import MessageBox from './components/MessageBox.vue'
+import Fbx2Gltf from './components/Fbx2Gltf.vue'
 export default {
   components: {
     LoadingBar,
@@ -25,7 +27,8 @@ export default {
     Obj2Gltf,
     Obj2Drc,
     PropertiesPanel,
-    MessageBox
+    MessageBox,
+    Fbx2Gltf
   },
   computed: {
     ...mapState({
