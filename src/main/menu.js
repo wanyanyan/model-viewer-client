@@ -56,6 +56,12 @@ function getTemplate() {
             window.webContents.send("fbx_gltf_dlg");
           }
         },
+        {
+          label: "obj转drc",
+          click: () => {
+            window.webContents.send("obj_drc_dlg");
+          }
+        },
         { type: "separator" },
         {
           label: "生成配置文件",

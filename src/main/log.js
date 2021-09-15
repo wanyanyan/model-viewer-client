@@ -1,7 +1,7 @@
 import { app, dialog } from "electron";
 import log from "electron-log";
 let date = new Date().toJSON().split('T')[0]
-log.transports.file.file = `.\\logs\\${date}.txt`;
+log.transports.file.resolvePath = () => `.\\logs\\${date}.txt`;
 log.catchErrors({
   showDialog: false,
   onError(error) {
