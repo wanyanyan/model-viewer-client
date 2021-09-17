@@ -16,8 +16,13 @@
 </template>
 
 <script>
+import {mapState} from 'vuex'
 export default {
-  props: ['info']
+  computed: {
+    ...mapState({
+      info: state => state.statisticInfo
+    })
+  }
 }
 </script>
 

@@ -2,28 +2,21 @@
   <div class="container">
     <div class="three-view"></div>
     <div class="toolbar">
-       <Button class="btn" type="warning" size="small" shape="circle" icon="md-information" title="显示详情" @click="showDetails"></Button>
        <Button class="btn" type="warning" size="small" shape="circle" icon="md-help" title="显示坐标轴" @click=toggleHelper></Button>
        <Button class="btn" type="warning" size="small" shape="circle" icon="md-expand" title="回到初始视角" @click=fitBounds></Button>
     </div>
     <div class="meta" v-if="boundingBox">包围盒：min({{boundingBox.min.x}}, {{boundingBox.min.y}}, {{boundingBox.min.z}})，max({{boundingBox.max.x}}, {{boundingBox.max.y}}, {{boundingBox.max.z}})</div>
-    <Modal
-      v-model="dialogShow"
-      title="统计信息"
-      width="340"
-      :mask-closable="false"
-      :closable="false">
-      <Info :info="staInfo" v-if="dialogShow"/>
-    </Modal>
   </div>
 </template>
 
 <script>
-import ModelViewer from '../libs/model-viewer'
+import ModelViewer from '../../libs/model-viewer'
 import {mapState} from 'vuex'
 import _ from 'lodash'
-import Info from './Info.vue'
+import Info from '../global/Info.vue'
 import * as THREE from "three"
+import util from '../../libs/util'
+window.THREE = THREE
 export default {
   components: {
     Info
@@ -35,7 +28,7 @@ export default {
         axisHelper: this.showHelper,
         stats: {
           show: true,
-          position: 'top-right'
+          position: 'top-left'
         }
       });
       this.viewer.on('click', this.sceneClick)
@@ -88,6 +81,7 @@ export default {
         }
         this.$store.commit('patch_boundingbox', bboxSimplify)
         this.$store.commit('patch_loading', false)
+        this.triggerUpdate()
       })
     },
     fitBounds() {
@@ -101,39 +95,46 @@ export default {
         this.viewer.removeAxisHelper()
       }
     },
-    showDetails() {
-      let info = this.viewer.getStatistics()
-      this.staInfo = info
-      this.dialogShow = true
-    },
     sceneClick(e) {
       let objects = this.viewer.queryObjects(e.point)
-      this.selectedObject = objects[0] || null
+      this.objectSelect(objects[0])
+    },
+    triggerUpdate() {
+      let info = this.viewer.getStatistics()
+      this.$store.commit('patch_statistic', info)
+      let objectGroup = this.viewer.scene.getObjectByProperty('fid', 'object-group')
+      let objectTree = util.getObjectTree(objectGroup)
+      this.$store.commit('patch_object_tree', objectTree)
+    },
+    selectNode(node) {
+      let object = this.viewer.scene.getObjectByProperty('uuid', node[0].uuid)
+      if (object) {
+        this.objectSelect(object)
+      }
+    },
+    objectSelect(obj) {
+      this.selectedObject = obj
       if (this.selectedObject) {
         let box3 = new THREE.Box3()
         box3.expandByObject(this.selectedObject)
         this.boxHelper.box = box3
         this.boxHelper.visible = true
-        let properties = Object.assign({
-          id: this.selectedObject.fid,
-          name: this.selectedObject.name
-        }, this.selectedObject.userData)
-        this.$store.commit('patch_properties', properties)
+        let selectedObjectInfo = util.getObjectInfo(this.selectedObject)
+        this.$store.commit('patch_selected_object', selectedObjectInfo)
       } else {
         this.boxHelper.visible = false
-        this.$store.commit('patch_properties', null)
+        this.$store.commit('patch_selected_object', null)
       }
     }
   },
   mounted() {
     this.initView()
     this.addModel()
+    this.$eventHub.$on('on-tree-select', this.selectNode)
   },
   data() {
     return {
-      showHelper: false,
-      dialogShow: false,
-      staInfo: null
+      showHelper: false
     }
   },
   computed: {
@@ -141,7 +142,8 @@ export default {
       modelOption: state => state.modelOption,
       environment: state => state.environment,
       lights: state => state.lights,
-      boundingBox: state => state.boundingBox
+      boundingBox: state => state.boundingBox,
+      materialUpdate: state => state.materialUpdate
     })
   },
   watch: {
@@ -156,7 +158,7 @@ export default {
         intensity
       })
     },
-    lights(newLights, oldLights) {
+    lights(newLights, oldLights) { // 更新光照
       for(let i = 0;i < newLights.length;i++) {
         let oldItem = oldLights.find(l => l.id === newLights[i].id)
         if (!oldItem) { // 添加光源
@@ -167,6 +169,10 @@ export default {
           continue 
         }
       }
+    },
+    materialUpdate() { // 更新材质
+      let {property, value} = this.materialUpdate
+      this.selectedObject.material[property] = value
     }
   }
 }

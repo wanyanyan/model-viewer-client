@@ -1,21 +1,21 @@
 <template>
   <div class="home">
     <div class="left">
-      <Upload />
+      <Model />
     </div>
     <div class="right">
-      <Model />
+      <GlobalPanel />
     </div>
   </div>
 </template>
 
 <script>
-import Upload from '@/components/Upload'
-import Model from '@/components/Model'
+import GlobalPanel from '@/components/global/GlobalPanel'
+import Model from '@/components/ui/Model'
 export default {
   name: 'Home',
   components: {
-    Upload,
+    GlobalPanel,
     Model
   }
 }
@@ -29,22 +29,21 @@ export default {
   left: 0;
   top: 0;
   background-color: #eee;
-  .left{
-    padding: 0 10px;
+  .right{
     position: absolute;
-    width: 200px;
+    width: 300px;
     height: 100%;
-    left: 0;
+    right: 0;
     top: 0;
     border-right: 1px solid #eee;
-    box-shadow: 0 0 10px #ccc;
+    box-shadow: 0 0 10px #888;
     overflow-x: hidden;
     overflow-y: auto;
   }
-  .right{
-    width: calc(100% - 200px);
+  .left{
+    width: calc(100% - 300px);
     height: 100%;
-    right: 0;
+    left: 0;
     top: 0;
     position: absolute;
     background-color: #fff;

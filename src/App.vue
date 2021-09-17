@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <router-view/>
+    <ImportModel />
     <LoadingBar :show="showLoading"/>
     <GeneratePreference />
     <Obj2Gltf />
@@ -13,13 +14,14 @@
 
 <script>
 import {mapState} from 'vuex'
-import LoadingBar from './components/LoadingBar.vue'
-import GeneratePreference from './components/GeneratePreference.vue'
-import Obj2Gltf from './components/Obj2Gltf.vue'
-import Obj2Drc from './components/Obj2Drc.vue'
-import PropertiesPanel from './components/PropertyPanel.vue'
-import MessageBox from './components/MessageBox.vue'
-import Fbx2Gltf from './components/Fbx2Gltf.vue'
+import ImportModel from './components/ui/ImportModel.vue'
+import LoadingBar from './components/ui/LoadingBar.vue'
+import GeneratePreference from './components/transform/GeneratePreference.vue'
+import Obj2Gltf from './components/transform/Obj2Gltf.vue'
+import Obj2Drc from './components/transform/Obj2Drc.vue'
+import PropertiesPanel from './components/setting/PropertyPanel.vue'
+import MessageBox from './components/ui/MessageBox.vue'
+import Fbx2Gltf from './components/transform/Fbx2Gltf.vue'
 export default {
   components: {
     LoadingBar,
@@ -28,7 +30,8 @@ export default {
     Obj2Drc,
     PropertiesPanel,
     MessageBox,
-    Fbx2Gltf
+    Fbx2Gltf,
+    ImportModel
   },
   computed: {
     ...mapState({

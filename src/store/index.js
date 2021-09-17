@@ -13,8 +13,11 @@ export default new Vuex.Store({
     lights: [],
     boundingBox: null,
     showLoading: false,
-    properties: null,
-    error: {}
+    selectedObjectInfo: null,
+    error: {},
+    statisticInfo: {},
+    objectTree: [],
+    materialUpdate: {}
   },
   mutations: {
     path_model_option(state, value) {
@@ -32,11 +35,20 @@ export default new Vuex.Store({
     patch_loading(state, loading) {
       state.showLoading = loading;
     },
-    patch_properties(state, value) {
-      state.properties = value;
+    patch_selected_object(state, value) {
+      state.selectedObjectInfo = value;
     },
     ui_show_error(state, error) {
       state.error = error;
+    },
+    patch_statistic(state, value) {
+      state.statisticInfo = value;
+    },
+    patch_object_tree(state, value) {
+      state.objectTree = value
+    },
+    trigger_material_update(state, value) {
+      state.materialUpdate = value
     }
   },
   actions: {},

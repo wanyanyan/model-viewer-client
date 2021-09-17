@@ -54,9 +54,14 @@ class ModelViewer extends Event {
     if (this.options.axisHelper) {
       this.addAxisHelper()
     }
-    this.objectGroup = new THREE.Group()
-    this.objectGroup.fid = CONSTANTS.objectGroupId
-    this.scene.add(this.objectGroup)
+    this._initObjectGroup()
+  }
+
+  _initObjectGroup() {
+    this.objectGroup = new THREE.Group();
+    this.objectGroup.fid = CONSTANTS.objectGroupId;
+    this.objectGroup.name = "外部模型"
+    this.scene.add(this.objectGroup);
   }
 
   _render() {
@@ -67,15 +72,13 @@ class ModelViewer extends Event {
     this.timer = requestAnimationFrame(() => {
       this._render()
     })
-    /* if (myObject) {
-      myObject.rotation.y += 0.01
-    } */
   }
 
   _createStats() {
     this.stats = new Stats()
     this.stats.showPanel(0)
     this._container.appendChild(this.stats.dom)
+    this.stats.dom.style.position = 'absolute'
     let position = this.options.stats.position
     if (position.indexOf("top") !== -1) {
       this.stats.dom.style.top = "0px"
@@ -169,6 +172,9 @@ class ModelViewer extends Event {
   _addModel(options) { // 添加一个实体模型
     this._totalModels++ // 用于计数
     let {format, url} = options
+    if (!options.name) {
+      options.name = util.parseUrl(url).filename;
+    }
     let cb = (object) => {
       this._modelLoaded(object, options)
     }
@@ -257,11 +263,11 @@ class ModelViewer extends Event {
         this._addVirtualModel(vpt)
       })
       this.loaded = true
-      this.fire("loaded")
       this.endTime = new Date().getTime()
       if (this._needBoundingBox) {
         this.fitBounds()
       }
+      this.fire("loaded");
     }
   }
 
@@ -346,8 +352,7 @@ class ModelViewer extends Event {
 
   removeAll() {
     this.scene.remove(this.objectGroup)
-    this.objectGroup = new THREE.Group()
-    this.scene.add(this.objectGroup)
+    this._initObjectGroup()
     this.boundingBox = null
   }
 
@@ -392,15 +397,15 @@ class ModelViewer extends Event {
       }
     })
     const intersects = raycaster.intersectObjects(allMeshs)
-    var objs = [];
+    /* var objs = [];
     for (var i = 0; i < intersects.length; i++) {
       var intersect = util.findObjectByChild(intersects[i].object);
       if (objs.indexOf(intersect) === -1) {
         objs.push(intersect);
       }
-    }
+    } */
 
-    return objs
+    return intersects.map(d => d.object);
   }
 }
 

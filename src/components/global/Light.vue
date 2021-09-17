@@ -1,7 +1,5 @@
 <template>
-  <div class="upload">
-    <Button class="btn" type="warning" @click="openfileDlg" style="margin: 10px;width: 100px;">打开模型</Button>
-    <div class="title">光照</div>
+  <div class="light-box">
     <div class="card">
       <div class="name">环境光</div>
       <Form class="my-form" :model="light" :label-width="50">
@@ -39,23 +37,14 @@
 </template>
 
 <script>
-import {ipcRenderer} from 'electron'
-import Constants from '@/libs/constants'
 import LightForm from './LightForm.vue'
 import {mapState} from 'vuex'
 import _ from 'lodash'
 export default {
-  name: 'Upload',
   components: {
     LightForm
   },
   methods: {
-    openfileDlg() {
-      ipcRenderer.send("open_local_model")
-    },
-    openfile(event, fileInfo) {
-      this.$store.commit('path_model_option', fileInfo)
-    },
     lightChange() {
       this.$store.commit('patch_environment', {
         color: parseInt(this.light.color.replace('#', '0x')),
@@ -84,7 +73,6 @@ export default {
     }
   },
   mounted() {
-    ipcRenderer.on("selected_local_models", this.openfile)
   },
   data() {
     return {
@@ -93,7 +81,8 @@ export default {
         intensity: 1
       },
       localLights: [],
-      dialogShow: false
+      dialogShow: false,
+      activePanel: 'scene'
     }
   },
   computed: {
