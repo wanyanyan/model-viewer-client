@@ -17,7 +17,8 @@ export default new Vuex.Store({
     error: {},
     statisticInfo: {},
     objectTree: [],
-    materialUpdate: {}
+    materialUpdate: {},
+    cameraInfo: {}
   },
   mutations: {
     path_model_option(state, value) {
@@ -45,10 +46,13 @@ export default new Vuex.Store({
       state.statisticInfo = value;
     },
     patch_object_tree(state, value) {
-      state.objectTree = value
+      state.objectTree = value;
     },
     trigger_material_update(state, value) {
-      state.materialUpdate = value
+      state.materialUpdate = value;
+    },
+    patch_camera(state, value) {
+      state.cameraInfo = value
     }
   },
   actions: {},

@@ -7,7 +7,7 @@
       </Panel>
       <Panel name="camera" v-if="!selectedObjectInfo">
         相机
-        <p slot="content">斯蒂夫·盖瑞·沃兹尼亚克（Stephen Gary Wozniak），美国电脑工程师，曾与史蒂夫·乔布斯合伙创立苹果电脑（今之苹果公司）。斯蒂夫·盖瑞·沃兹尼亚克曾就读于美国科罗拉多大学，后转学入美国著名高等学府加州大学伯克利分校（UC Berkeley）并获得电机工程及计算机（EECS）本科学位（1987年）。</p>
+        <Camera slot="content"/>
       </Panel>
       <Panel name="light" v-if="!selectedObjectInfo">
         光照
@@ -41,6 +41,7 @@ import PropertyPanel from '../setting/PropertyPanel.vue'
 import Geometry from '../setting/Geometry.vue'
 import Material from '../setting/Material.vue'
 import ObjectTree from '../global/ObjectTree.vue'
+import Camera from './Camera.vue'
 export default {
   components: {
     Light,
@@ -48,7 +49,8 @@ export default {
     PropertyPanel,
     Geometry,
     Material,
-    ObjectTree
+    ObjectTree,
+    Camera
   },
   mounted() {
   },

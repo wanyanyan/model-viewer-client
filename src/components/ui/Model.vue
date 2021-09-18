@@ -79,6 +79,7 @@ export default {
             z: Number(bbox.max.z.toFixed(2))
           }
         }
+        this.viewer.on('move', this.getCameraInfo)
         this.$store.commit('patch_boundingbox', bboxSimplify)
         this.$store.commit('patch_loading', false)
         this.triggerUpdate()
@@ -99,12 +100,18 @@ export default {
       let objects = this.viewer.queryObjects(e.point)
       this.objectSelect(objects[0])
     },
+    getCameraInfo() {
+      let cameraInfo = util.getCameraInfo(this.viewer.camera)
+      cameraInfo.helper = this.cameraInfo.helper || false
+      this.$store.commit('patch_camera', cameraInfo)
+    },
     triggerUpdate() {
       let info = this.viewer.getStatistics()
       this.$store.commit('patch_statistic', info)
       let objectGroup = this.viewer.scene.getObjectByProperty('fid', 'object-group')
       let objectTree = util.getObjectTree(objectGroup)
       this.$store.commit('patch_object_tree', objectTree)
+      this.getCameraInfo()
     },
     selectNode(node) {
       let object = this.viewer.scene.getObjectByProperty('uuid', node[0].uuid)
@@ -125,12 +132,31 @@ export default {
         this.boxHelper.visible = false
         this.$store.commit('patch_selected_object', null)
       }
+    },
+    updateCamera({property, value}) {
+      if (property === 'helper') {
+        if (value) {
+          var helper = new THREE.CameraHelper( this.viewer.camera );
+          helper.fid = 'camera-helper'
+          this.viewer.scene.add( helper );
+        } else {
+          let object = this.viewer.scene.getObjectByProperty("fid", 'camera-helper')
+          if (object) {
+            object.removeFromParent()
+          }
+        }
+      } else if (property === 'position' || property === 'rotation' || property === 'scale') {
+        this.viewer.camera[property].set(value.x, value.y, value.z)
+      } else {
+        this.viewer.camera[property] = value
+      }
     }
   },
   mounted() {
     this.initView()
     this.addModel()
     this.$eventHub.$on('on-tree-select', this.selectNode)
+    this.$eventHub.$on('on-camera-change', this.updateCamera)
   },
   data() {
     return {
@@ -143,7 +169,8 @@ export default {
       environment: state => state.environment,
       lights: state => state.lights,
       boundingBox: state => state.boundingBox,
-      materialUpdate: state => state.materialUpdate
+      materialUpdate: state => state.materialUpdate,
+      cameraInfo: state => state.cameraInfo
     })
   },
   watch: {

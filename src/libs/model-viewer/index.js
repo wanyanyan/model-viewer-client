@@ -48,6 +48,9 @@ class ModelViewer extends Event {
     })
     this.controls = new OrbitControls(this.camera, this.renderer.domElement)
     this.controls.target.set(0, 0, 0)
+    this.controls.addEventListener("change", () => {
+      this.fire('move', this)
+    });
 
     util.createSky(this.scene)
     this._render()
